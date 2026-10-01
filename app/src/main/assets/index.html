@@ -22319,21 +22319,11 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
 
 
 <style id="__jrsy_unlock_css">
-  /* [本地直入·CSS级补丁] 最高优先级隐藏登录层，任何 JS 覆盖不了 */
   #authOverlay.auth-overlay {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-      z-index: -1 !important;
+      display: none !important; visibility: hidden !important;
+      opacity: 0 !important; pointer-events: none !important; z-index: -1 !important;
   }
-  /* 确保手机主体可见 */
-  .phone {
-      opacity: 1 !important;
-      transition: none !important;
-  }
-  /* 加载遮罩也别挡路（它自己会淡出，这里兜底） */
-  #loadingOverlay { display: none !important; }
+  .phone { opacity: 1 !important; }
 </style>
 </head>
 <body>
@@ -22601,12 +22591,12 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
                                 <div class="new-widget" id="homeScreenWidget">
                                     <div class="widget-header-text" id="widgetHeaderText" onclick="editWidgetText('widgetHeaderText', this)">(:::[♡]:::)..?</div>
                                     <div class="widget-bubble">
-                                        <img id="widgetImage1" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>" onclick="editWidgetImage('widgetImage1')">
+                                        <img id="widgetImage1" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>" onclick="editWidgetImage('widgetImage1')">
                                         <span id="widgetText1" onclick="editWidgetText('widgetText1', this)">have a nice day 🌟</span>
                                     </div>
                                     <div class="widget-bubble">
                                         <span id="widgetText2" onclick="editWidgetText('widgetText2', this)">.o. HAPPY EVERYDAY ☻</span>
-                                        <img id="widgetImage2" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>" onclick="editWidgetImage('widgetImage2')">
+                                        <img id="widgetImage2" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>" onclick="editWidgetImage('widgetImage2')">
                                     </div>
                                 </div>
                                 <!-- 这是修改后的代码 -->
@@ -30742,59 +30732,26 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
 </div>
 
 <!-- 放在 
-    <script>
-    // [本地直入兜底 v2] 直接移除登录层 DOM，并确保主界面可见
-    (function () {
-        function unlock() {
-            var a = document.getElementById('authOverlay');
-            if (a && a.parentNode) { a.parentNode.removeChild(a); }
-            else if (a) { a.style.setProperty('display','none','important'); }
-            var p = document.querySelector('.phone');
-            if (p) p.style.setProperty('opacity','1','important');
-            var l = document.getElementById('loadingOverlay');
-            if (l) l.style.setProperty('display','none','important');
-        }
-        unlock();
-        document.addEventListener('DOMContentLoaded', unlock);
-        window.addEventListener('load', unlock);
-        var n = 0;
-        var t = setInterval(function () {
-            unlock();
-            if (++n > 60) clearInterval(t);
-        }, 200);
-    })();
-    </script>
-
-    <script>
-    // [图片兜底补丁] 任何 <img> 加载失败 -> 换成内嵌占位图，避免出现碎图
-    (function () {
-        var PH = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>";
-        function patch(img) {
-            if (img.__phFixed) return;
-            img.__phFixed = true;
-            img.addEventListener('error', function () {
-                if (img.src !== PH) { img.src = PH; }
-            });
-            // 已经加载失败过的
-            if (img.complete && img.naturalWidth === 0) {
-                img.src = PH;
-            }
-        }
-        function scan() {
-            var list = document.getElementsByTagName('img');
-            for (var i = 0; i < list.length; i++) patch(list[i]);
-        }
-        scan();
-        document.addEventListener('DOMContentLoaded', scan);
-        window.addEventListener('load', scan);
-        var n = 0;
-        var t = setInterval(function () { scan(); if (++n > 40) clearInterval(t); }, 300);
-        // 监听到新增节点
-        try {
-            new MutationObserver(scan).observe(document.documentElement, {childList:true, subtree:true});
-        } catch (e) {}
-    })();
-    </script>
+<script>
+// [图片兜底] 仅替换加载失败的图片，不拦截任何事件
+(function () {
+  var PH = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>";
+  function fix(img) {
+    if (img.__ph) return;
+    img.__ph = 1;
+    img.addEventListener('error', function () { img.src = PH; }, {passive:true});
+    if (img.complete && img.naturalWidth === 0) { img.src = PH; }
+  }
+  function scan() {
+    var l = document.getElementsByTagName('img');
+    for (var i = 0; i < l.length; i++) fix(l[i]);
+  }
+  scan();
+  document.addEventListener('DOMContentLoaded', scan);
+  window.addEventListener('load', scan);
+  var c = 0, t = setInterval(function () { scan(); if (++c > 30) clearInterval(t); }, 400);
+})();
+</script>
 </body> 标签之前 -->
 <div id="installGuideModal" class="modal">
     <div class="modal-content" style="text-align: center;">
@@ -31669,9 +31626,9 @@ let globalStickerGroupIds = [];
 let currentBindingTarget = 'global';
         let homeWidgetData = {
             headerText: '(:::[♡]:::)..?',
-            image1: 'data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>',
+            image1: 'data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>',
             text1: 'have a nice day 🌟',
-            image2: 'data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>',
+            image2: 'data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>',
             text2: '.o. HAPPY EVERYDAY ☻'
         };
 
@@ -79862,21 +79819,16 @@ function applyPageTopOffset() {
     }
 
     async function checkAuthState() {
-        // [本地直入补丁] 跳过 Supabase 云端鉴权，直接进入主界面
+        // [本地直入补丁] 跳过云端鉴权，直接进入主界面
         try {
             const authOverlay = document.getElementById('authOverlay');
             const phoneContainer = document.querySelector('.phone');
             const loadingOverlay = document.getElementById('loadingOverlay');
             if (loadingOverlay) loadingOverlay.style.display = 'none';
             if (authOverlay) authOverlay.style.display = 'none';
-            if (phoneContainer) {
-                phoneContainer.style.opacity = '1';
-                phoneContainer.style.transition = 'opacity 0.5s ease';
-            }
+            if (phoneContainer) { phoneContainer.style.opacity = '1'; }
             window.__jrsy_local_mode = true;
-        } catch (e) {
-            console.error('本地直入失败:', e);
-        }
+        } catch (e) { console.error('本地直入失败:', e); }
     }
 
     async function handleAuthLogin() {
