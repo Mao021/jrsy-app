@@ -22601,12 +22601,12 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
                                 <div class="new-widget" id="homeScreenWidget">
                                     <div class="widget-header-text" id="widgetHeaderText" onclick="editWidgetText('widgetHeaderText', this)">(:::[♡]:::)..?</div>
                                     <div class="widget-bubble">
-                                        <img id="widgetImage1" src="https://i.imgur.com/example-avatar-1.png" onclick="editWidgetImage('widgetImage1')">
+                                        <img id="widgetImage1" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>" onclick="editWidgetImage('widgetImage1')">
                                         <span id="widgetText1" onclick="editWidgetText('widgetText1', this)">have a nice day 🌟</span>
                                     </div>
                                     <div class="widget-bubble">
                                         <span id="widgetText2" onclick="editWidgetText('widgetText2', this)">.o. HAPPY EVERYDAY ☻</span>
-                                        <img id="widgetImage2" src="https://i.imgur.com/example-avatar-2.png" onclick="editWidgetImage('widgetImage2')">
+                                        <img id="widgetImage2" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>" onclick="editWidgetImage('widgetImage2')">
                                     </div>
                                 </div>
                                 <!-- 这是修改后的代码 -->
@@ -30764,6 +30764,37 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
         }, 200);
     })();
     </script>
+
+    <script>
+    // [图片兜底补丁] 任何 <img> 加载失败 -> 换成内嵌占位图，避免出现碎图
+    (function () {
+        var PH = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>";
+        function patch(img) {
+            if (img.__phFixed) return;
+            img.__phFixed = true;
+            img.addEventListener('error', function () {
+                if (img.src !== PH) { img.src = PH; }
+            });
+            // 已经加载失败过的
+            if (img.complete && img.naturalWidth === 0) {
+                img.src = PH;
+            }
+        }
+        function scan() {
+            var list = document.getElementsByTagName('img');
+            for (var i = 0; i < list.length; i++) patch(list[i]);
+        }
+        scan();
+        document.addEventListener('DOMContentLoaded', scan);
+        window.addEventListener('load', scan);
+        var n = 0;
+        var t = setInterval(function () { scan(); if (++n > 40) clearInterval(t); }, 300);
+        // 监听到新增节点
+        try {
+            new MutationObserver(scan).observe(document.documentElement, {childList:true, subtree:true});
+        } catch (e) {}
+    })();
+    </script>
 </body> 标签之前 -->
 <div id="installGuideModal" class="modal">
     <div class="modal-content" style="text-align: center;">
@@ -31638,9 +31669,9 @@ let globalStickerGroupIds = [];
 let currentBindingTarget = 'global';
         let homeWidgetData = {
             headerText: '(:::[♡]:::)..?',
-            image1: 'https://i.imgur.com/example-avatar-1.png',
+            image1: 'data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>',
             text1: 'have a nice day 🌟',
-            image2: 'https://i.imgur.com/example-avatar-2.png',
+            image2: 'data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23B6EDFF'/><stop offset='1' stop-color='%23DFF6E4'/></linearGradient></defs><circle cx='50' cy='50' r='50' fill='url(%23g)'/><circle cx='50' cy='40' r='15' fill='%23fff'/><path d='M22 84 Q50 56 78 84 Z' fill='%23fff'/></svg>',
             text2: '.o. HAPPY EVERYDAY ☻'
         };
 
