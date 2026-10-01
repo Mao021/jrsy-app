@@ -22317,6 +22317,24 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
+
+<style id="__jrsy_unlock_css">
+  /* [本地直入·CSS级补丁] 最高优先级隐藏登录层，任何 JS 覆盖不了 */
+  #authOverlay.auth-overlay {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      z-index: -1 !important;
+  }
+  /* 确保手机主体可见 */
+  .phone {
+      opacity: 1 !important;
+      transition: none !important;
+  }
+  /* 加载遮罩也别挡路（它自己会淡出，这里兜底） */
+  #loadingOverlay { display: none !important; }
+</style>
 </head>
 <body>
 
@@ -30725,25 +30743,25 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
 
 <!-- 放在 
     <script>
-    // [本地直入兜底] 强制隐藏登录层，并确保主界面可见
+    // [本地直入兜底 v2] 直接移除登录层 DOM，并确保主界面可见
     (function () {
         function unlock() {
             var a = document.getElementById('authOverlay');
+            if (a && a.parentNode) { a.parentNode.removeChild(a); }
+            else if (a) { a.style.setProperty('display','none','important'); }
             var p = document.querySelector('.phone');
-            if (a) a.style.display = 'none';
-            if (p) p.style.opacity = '1';
+            if (p) p.style.setProperty('opacity','1','important');
+            var l = document.getElementById('loadingOverlay');
+            if (l) l.style.setProperty('display','none','important');
         }
-        document.addEventListener('DOMContentLoaded', function () {
-            unlock();
-            var n = 0;
-            var t = setInterval(function () {
-                unlock();
-                if (++n > 40) clearInterval(t);
-            }, 250);
-        });
+        unlock();
+        document.addEventListener('DOMContentLoaded', unlock);
         window.addEventListener('load', unlock);
-        setTimeout(unlock, 1200);
-        setTimeout(unlock, 2500);
+        var n = 0;
+        var t = setInterval(function () {
+            unlock();
+            if (++n > 60) clearInterval(t);
+        }, 200);
     })();
     </script>
 </body> 标签之前 -->
