@@ -30723,7 +30723,30 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
     </div>
 </div>
 
-<!-- 放在 </body> 标签之前 -->
+<!-- 放在 
+    <script>
+    // [本地直入兜底] 强制隐藏登录层，并确保主界面可见
+    (function () {
+        function unlock() {
+            var a = document.getElementById('authOverlay');
+            var p = document.querySelector('.phone');
+            if (a) a.style.display = 'none';
+            if (p) p.style.opacity = '1';
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            unlock();
+            var n = 0;
+            var t = setInterval(function () {
+                unlock();
+                if (++n > 40) clearInterval(t);
+            }, 250);
+        });
+        window.addEventListener('load', unlock);
+        setTimeout(unlock, 1200);
+        setTimeout(unlock, 2500);
+    })();
+    </script>
+</body> 标签之前 -->
 <div id="installGuideModal" class="modal">
     <div class="modal-content" style="text-align: center;">
         <div class="modal-title">安装全屏版 jrsy</div>
@@ -79790,32 +79813,20 @@ function applyPageTopOffset() {
     }
 
     async function checkAuthState() {
-        if (!window._sb) return; // 没加载出来直接拦截防卡死
+        // [本地直入补丁] 跳过 Supabase 云端鉴权，直接进入主界面
         try {
-            const { data: { session } } = await window._sb.auth.getSession();
             const authOverlay = document.getElementById('authOverlay');
             const phoneContainer = document.querySelector('.phone');
             const loadingOverlay = document.getElementById('loadingOverlay');
-
             if (loadingOverlay) loadingOverlay.style.display = 'none';
-
-            if (session) {
-                const { data: pData } = await window._sb.from('profiles').select('status, banned_reason').eq('id', session.user.id).single();
-                if (pData && pData.status === 'banned') {
-                    await window._sb.auth.signOut();
-                    authOverlay.style.display = 'flex';
-                    showAlert(`您的账号已被封禁。\n原因：${pData.banned_reason || '违规'}`);
-                } else {
-                    authOverlay.style.display = 'none';
-                    phoneContainer.style.opacity = '1';
-                    checkIfAdmin(session.user.id);
-                }
-            } else {
-                authOverlay.style.display = 'flex';
-                phoneContainer.style.opacity = '0';
+            if (authOverlay) authOverlay.style.display = 'none';
+            if (phoneContainer) {
+                phoneContainer.style.opacity = '1';
+                phoneContainer.style.transition = 'opacity 0.5s ease';
             }
+            window.__jrsy_local_mode = true;
         } catch (e) {
-            console.error("鉴权检查失败:", e);
+            console.error('本地直入失败:', e);
         }
     }
 
