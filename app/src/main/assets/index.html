@@ -22317,14 +22317,7 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
-
-<style id="__jrsy_unlock_css">
-  #authOverlay.auth-overlay {
-      display: none !important; visibility: hidden !important;
-      opacity: 0 !important; pointer-events: none !important; z-index: -1 !important;
-  }
-  .phone { opacity: 1 !important; }
-</style>
+<style>#authOverlay{display:none !important}</style>
 </head>
 <body>
 
@@ -22591,12 +22584,12 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
                                 <div class="new-widget" id="homeScreenWidget">
                                     <div class="widget-header-text" id="widgetHeaderText" onclick="editWidgetText('widgetHeaderText', this)">(:::[♡]:::)..?</div>
                                     <div class="widget-bubble">
-                                        <img id="widgetImage1" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>" onclick="editWidgetImage('widgetImage1')">
+                                        <img id="widgetImage1" src="https://i.imgur.com/example-avatar-1.png" onclick="editWidgetImage('widgetImage1')">
                                         <span id="widgetText1" onclick="editWidgetText('widgetText1', this)">have a nice day 🌟</span>
                                     </div>
                                     <div class="widget-bubble">
                                         <span id="widgetText2" onclick="editWidgetText('widgetText2', this)">.o. HAPPY EVERYDAY ☻</span>
-                                        <img id="widgetImage2" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>" onclick="editWidgetImage('widgetImage2')">
+                                        <img id="widgetImage2" src="https://i.imgur.com/example-avatar-2.png" onclick="editWidgetImage('widgetImage2')">
                                     </div>
                                 </div>
                                 <!-- 这是修改后的代码 -->
@@ -30731,28 +30724,7 @@ filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
     </div>
 </div>
 
-<!-- 放在 
-<script>
-// [图片兜底] 仅替换加载失败的图片，不拦截任何事件
-(function () {
-  var PH = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>";
-  function fix(img) {
-    if (img.__ph) return;
-    img.__ph = 1;
-    img.addEventListener('error', function () { img.src = PH; }, {passive:true});
-    if (img.complete && img.naturalWidth === 0) { img.src = PH; }
-  }
-  function scan() {
-    var l = document.getElementsByTagName('img');
-    for (var i = 0; i < l.length; i++) fix(l[i]);
-  }
-  scan();
-  document.addEventListener('DOMContentLoaded', scan);
-  window.addEventListener('load', scan);
-  var c = 0, t = setInterval(function () { scan(); if (++c > 30) clearInterval(t); }, 400);
-})();
-</script>
-</body> 标签之前 -->
+<!-- 放在 </body> 标签之前 -->
 <div id="installGuideModal" class="modal">
     <div class="modal-content" style="text-align: center;">
         <div class="modal-title">安装全屏版 jrsy</div>
@@ -31626,9 +31598,9 @@ let globalStickerGroupIds = [];
 let currentBindingTarget = 'global';
         let homeWidgetData = {
             headerText: '(:::[♡]:::)..?',
-            image1: 'data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>',
+            image1: 'https://i.imgur.com/example-avatar-1.png',
             text1: 'have a nice day 🌟',
-            image2: 'data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23e8eef5'/><circle cx='50' cy='38' r='14' fill='%23fff'/><path d='M24 82 Q50 56 76 82 Z' fill='%23fff'/></svg>',
+            image2: 'https://i.imgur.com/example-avatar-2.png',
             text2: '.o. HAPPY EVERYDAY ☻'
         };
 
@@ -79819,16 +79791,14 @@ function applyPageTopOffset() {
     }
 
     async function checkAuthState() {
-        // [本地直入补丁] 跳过云端鉴权，直接进入主界面
         try {
-            const authOverlay = document.getElementById('authOverlay');
-            const phoneContainer = document.querySelector('.phone');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
-            if (authOverlay) authOverlay.style.display = 'none';
-            if (phoneContainer) { phoneContainer.style.opacity = '1'; }
-            window.__jrsy_local_mode = true;
-        } catch (e) { console.error('本地直入失败:', e); }
+            var a = document.getElementById('authOverlay');
+            var p = document.querySelector('.phone');
+            var l = document.getElementById('loadingOverlay');
+            if (l) l.style.display = 'none';
+            if (a) a.style.display = 'none';
+            if (p) p.style.opacity = '1';
+        } catch (e) { console.error(e); }
     }
 
     async function handleAuthLogin() {
